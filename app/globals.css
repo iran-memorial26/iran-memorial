@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+@theme {
+  --color-memorial-950: #0a0a0f;
+  --color-memorial-900: #111118;
+  --color-memorial-800: #1a1a24;
+  --color-memorial-700: #252532;
+  --color-memorial-600: #3a3a4a;
+  --color-memorial-500: #6b6b80;
+  --color-memorial-400: #9090a8;
+  --color-memorial-300: #b8b8cc;
+  --color-memorial-200: #d4d4e0;
+  --color-memorial-100: #ebebf0;
+  --color-memorial-50: #f5f5f8;
+
+  --color-gold-500: #c9a84c;
+  --color-gold-400: #d4b95e;
+  --color-gold-300: #e0ca7a;
+
+  --color-blood-600: #8b1a1a;
+  --color-blood-500: #b91c1c;
+  --color-blood-400: #dc2626;
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-farsi: "Vazirmatn", "Tahoma", "Arial", sans-serif;
+}
+
+body {
+  background-color: var(--color-memorial-950);
+  color: var(--color-memorial-100);
+}
+
+/* Farsi font for RTL locale */
+[dir="rtl"] {
+  font-family: var(--font-farsi);
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Memorial candle animation */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.candle-flicker {
+  animation: flicker 3s ease-in-out infinite;
+}
+
+/* Timeline line */
+.timeline-line {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--color-memorial-600),
+    var(--color-blood-600),
+    var(--color-memorial-600),
+    transparent
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Print stylesheet — for vigils, court filings, family archives,
+   journalist clippings. Strips dark UI to plain black-on-white,
+   hides chrome (nav, share buttons, comments), keeps the memorial
+   content (name, photo, dates, key facts, sources).
+   ───────────────────────────────────────────────────────────── */
+@media print {
+  /* Reset to legible black on white */
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Force every element to print-friendly colors */
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    border-color: #999 !important;
+  }
+
+  /* Hide chrome and interactive elements */
+  header,
+  footer,
+  nav,
+  [aria-label="Breadcrumb"],
+  [data-print-hide],
+  button {
+    display: none !important;
+  }
+
+  /* Anchors print as plain text, not blue underlined */
+  a,
+  a:visited {
+    text-decoration: none !important;
+    color: #000 !important;
+  }
+
+  /* External-link URLs printed after the anchor text for traceability */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #555 !important;
+  }
+
+  /* Keep images bounded so they don't dominate the page */
+  img {
+    max-width: 6cm !important;
+    height: auto !important;
+    page-break-inside: avoid;
+  }
+
+  /* Tight readable type */
+  h1 { font-size: 22pt; margin: 0 0 8pt; }
+  h2 { font-size: 16pt; margin: 14pt 0 6pt; page-break-after: avoid; }
+  h3 { font-size: 13pt; margin: 10pt 0 4pt; page-break-after: avoid; }
+  p, li { font-size: 11pt; line-height: 1.4; orphans: 3; widows: 3; }
+
+  section,
+  article {
+    page-break-inside: avoid;
+  }
+
+  /* Hide candle emoji animations and decorative SVGs */
+  .candle-flicker,
+  svg[aria-hidden="true"] {
+    display: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * High-contrast accessibility mode
+ * ---
+ * Opt-in via the header toggle (components/ContrastToggle.tsx). Sets
+ * data-contrast="high" on <html> and persists to localStorage.
+ *
+ * Targets two real-world audiences for the memorial:
+ *   - Older Iranian relatives reading on small phones in bright sun
+ *   - Visitors with reduced visual acuity / colorblindness
+ *
+ * Strategy:
+ *   - Boost text colors to near-white (#fff) where they were memorial-300/400
+ *   - Boost border colors to near-white where they were memorial-700/800
+ *   - Strip the decorative radial-gradient blood-red wash + candle flicker
+ *     dimming (those are atmospheric, not load-bearing)
+ *   - Force the candle/gold accents to a brighter shade so they remain
+ *     distinguishable rather than washing into the white text
+ *   - Keep the dark background (memorial brand) — high contrast doesn't
+ *     mean light mode, just higher fg/bg separation
+ * --------------------------------------------------------------------------- */
+:root[data-contrast="high"] {
+  --color-memorial-300: #ffffff;
+  --color-memorial-400: #f5f5f5;
+  --color-memorial-500: #e5e5e5;
+  --color-memorial-600: #d4d4d4;
+  --color-memorial-700: #a1a1a1;
+  --color-memorial-800: #6b6b6b;
+}
+
+:root[data-contrast="high"] body {
+  /* Pure black background gives the maximum contrast against the
+     boosted text. The default memorial-950 (#0a0d12) is too soft. */
+  background: #000 !important;
+}
+
+:root[data-contrast="high"] .text-memorial-300,
+:root[data-contrast="high"] .text-memorial-400,
+:root[data-contrast="high"] .text-memorial-500 {
+  color: #ffffff !important;
+}
+
+:root[data-contrast="high"] .text-memorial-600,
+:root[data-contrast="high"] .text-memorial-700 {
+  color: #d4d4d4 !important;
+}
+
+:root[data-contrast="high"] .text-gold-400,
+:root[data-contrast="high"] .text-gold-300 {
+  /* Brighter gold so the accent is still readable against white-ified text */
+  color: #fbbf24 !important;
+}
+
+:root[data-contrast="high"] .text-blood-400,
+:root[data-contrast="high"] .text-blood-300 {
+  /* Brighter red so the executed/killed badges stay distinguishable */
+  color: #fca5a5 !important;
+}
+
+:root[data-contrast="high"] .border-memorial-700,
+:root[data-contrast="high"] .border-memorial-800 {
+  border-color: #a1a1a1 !important;
+}
+
+/* Strip atmosphere — gradients + low-opacity overlays both create
+   contrast traps under high-contrast mode. */
+:root[data-contrast="high"] [class*="from-memorial-"],
+:root[data-contrast="high"] [class*="to-memorial-"],
+:root[data-contrast="high"] [class*="bg-gradient-"] {
+  background: transparent !important;
+}
+
+:root[data-contrast="high"] [class*="bg-memorial-900"],
+:root[data-contrast="high"] [class*="bg-memorial-800"] {
+  background-color: #1f1f1f !important;
+}
+
+/* Disable candle-flicker animation — animated opacity drops below the
+   contrast floor twice a second. */
+:root[data-contrast="high"] .candle-flicker {
+  animation: none !important;
+  opacity: 1 !important;
+}

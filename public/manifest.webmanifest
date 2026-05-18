@@ -1,0 +1,36 @@
+{
+  "name": "Iran Memorial",
+  "short_name": "Iran Memorial",
+  "description": "A living memorial for the victims of the Islamic Republic of Iran. Documenting every life lost to state violence — readable offline.",
+  "start_url": "/en",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0d12",
+  "theme_color": "#0a0d12",
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/icons/candle-512.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "news", "reference"],
+  "shortcuts": [
+    {
+      "name": "All victims",
+      "short_name": "Victims",
+      "url": "/en/victims",
+      "description": "Browse all documented victims"
+    },
+    {
+      "name": "Submit a name",
+      "short_name": "Submit",
+      "url": "/en/submit",
+      "description": "Help us document a victim"
+    }
+  ]
+}

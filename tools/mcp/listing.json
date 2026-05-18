@@ -1,0 +1,121 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/server-listing-v1.json",
+  "name": "iran-memorial",
+  "displayName": "Iran Memorial",
+  "description": "Public, read-only MCP server for the Iran Memorial database. Search and cite over 37,000 documented victims of the Islamic Republic of Iran (1979–present). Five tools: search victims, fetch full profiles, list judicial executions, list death-row prisoners, fetch aggregate statistics. No API key required, CC BY-SA 4.0 data.",
+  "shortDescription": "Cite-ready human-rights data: 37K+ Iranian victims, 12 sources, 1979–present.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "homepage": "<DEPLOYMENT_URL>",
+  "repository": "https://github.com/iran-memorial26/iran-memorial",
+  "documentation": "<DEPLOYMENT_URL>/en/developers#mcp",
+  "categories": ["research", "human-rights", "open-data", "journalism"],
+  "tags": [
+    "iran",
+    "human-rights",
+    "memorial",
+    "open-data",
+    "journalism",
+    "research",
+    "cc-by-sa-4.0",
+    "public",
+    "read-only",
+    "no-auth"
+  ],
+  "language": "typescript",
+  "runtime": "node",
+  "transport": "stdio",
+  "install": {
+    "type": "git+npm",
+    "git": "https://github.com/iran-memorial26/iran-memorial.git",
+    "subdirectory": "tools/mcp",
+    "buildCommand": "npm install && npm run build",
+    "binary": "tools/mcp/dist/index.js"
+  },
+  "claudeDesktopConfig": {
+    "mcpServers": {
+      "iran-memorial": {
+        "command": "node",
+        "args": ["/absolute/path/to/iran-memorial/tools/mcp/dist/index.js"]
+      }
+    }
+  },
+  "envVariables": {
+    "IRAN_MEMORIAL_BASE_URL": {
+      "default": "<DEPLOYMENT_URL>",
+      "description": "Override the upstream HTTP API base URL — useful for self-hosted or staging deployments. Read-only at every layer.",
+      "required": false
+    }
+  },
+  "tools": [
+    {
+      "name": "search_victims",
+      "description": "Full-text search over victim names (Latin and Farsi), places of death, and case details. Returns matches with profile slugs and citation-ready URLs.",
+      "parameters": {
+        "q": "string · 2–200 characters · required",
+        "limit": "integer · 1–50 · default 20"
+      },
+      "rateLimit": "60 requests / minute / IP"
+    },
+    {
+      "name": "get_victim",
+      "description": "Full victim profile by slug — names, dates, places, charges, court, sources, photo URL, verification status. The slug comes from search_victims.",
+      "parameters": {
+        "slug": "string · required"
+      },
+      "rateLimit": "120 requests / minute / IP"
+    },
+    {
+      "name": "get_executions",
+      "description": "Paginated list of judicial executions. Filterable by method (hanging, shooting, stoning, custody) and year. Useful for time-series and method-of-execution analysis.",
+      "parameters": {
+        "method": "enum · hanging | shooting | stoning | custody | other · optional",
+        "year": "integer · 4-digit · optional",
+        "page": "integer · ≥1 · default 1",
+        "limit": "integer · 1–100 · default 25"
+      },
+      "rateLimit": "30 requests / minute / IP"
+    },
+    {
+      "name": "get_death_row",
+      "description": "People currently sentenced to death and awaiting execution. Drives the activism CTA — these are the cases where international advocacy can still save lives.",
+      "parameters": {
+        "page": "integer · ≥1 · default 1",
+        "limit": "integer · 1–100 · default 50"
+      },
+      "rateLimit": "30 requests / minute / IP"
+    },
+    {
+      "name": "get_statistics",
+      "description": "Aggregate counts: total victims documented, events, sources, recent protest executions, current death-row size, years of repression.",
+      "parameters": {},
+      "rateLimit": "30 requests / minute / IP"
+    }
+  ],
+  "security": {
+    "writeOperations": "none",
+    "authentication": "none",
+    "readOnlyEnforcement": "Postgres role with GRANT SELECT only — even a buggy server-side commit cannot mutate data. INSERT attempts return permission denied for table … at the database layer.",
+    "rateLimit": "Per-IP sliding window in addition to upstream Cloudflare rate limit",
+    "publicSurfaceDocs": "https://github.com/iran-memorial26/iran-memorial/blob/main/docs/SECURITY-AUDIT-2026-05-09.md"
+  },
+  "data": {
+    "license": "CC BY-SA 4.0",
+    "attribution": "Iran Memorial — <DEPLOYMENT_DOMAIN>",
+    "size": "~37,000 victim records, ~61,000 source citations, ~25,000 photos",
+    "sources": "12 verified human-rights / journalism / research organizations (Boroumand, HRANA, Hengaw, KHRN, CPJ, witness.report, …)",
+    "updateCadence": "Weekly enrich cron + monthly Zenodo DOI snapshot"
+  },
+  "exampleQueries": [
+    "Search for Mahsa Amini in the Iran Memorial database",
+    "Show me everyone executed by hanging in Iran in 2024",
+    "Who is currently on death row according to the Iran Memorial Project?",
+    "Cite the Iran Memorial profile of [name] in my article",
+    "Pattern of conduct linked to Judge Salavati"
+  ],
+  "maintainer": {
+    "name": "Iran Memorial Project",
+    "organization": "Woman Life Freedom e.V.",
+    "contact": "<CONTACT_EMAIL>"
+  }
+}

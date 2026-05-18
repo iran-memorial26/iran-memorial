@@ -1,0 +1,30 @@
+{
+  "name": "@iran-memorial/mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol server for Iran Memorial — query the victim database from any MCP-aware LLM (Claude Desktop, Cline, Cursor, etc.).",
+  "type": "module",
+  "bin": {
+    "iran-memorial-mcp": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": ["mcp", "iran", "memorial", "human-rights", "claude"],
+  "license": "MIT",
+  "repository": "https://github.com/iran-memorial26/iran-memorial",
+  "homepage": "<DEPLOYMENT_URL>"
+}

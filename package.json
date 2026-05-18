@@ -1,0 +1,89 @@
+{
+  "name": "iran-memorial",
+  "version": "1.0.0",
+  "description": "**A living memorial for the victims of the Islamic Republic of Iran (1979–present)**",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:migrate": "npx prisma migrate dev",
+    "db:seed": "npx prisma db seed",
+    "db:studio": "npx prisma studio",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "check:i18n": "node scripts/check-i18n.mjs",
+    "meili:reindex": "tsx scripts/meili-reindex.ts",
+    "meili:reindex:incremental": "tsx scripts/meili-reindex.ts --since 2h"
+  },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iran-memorial26/iran-memorial.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/iran-memorial26/iran-memorial/issues"
+  },
+  "homepage": "https://github.com/iran-memorial26/iran-memorial#readme",
+  "dependencies": {
+    "@prisma/client": "^6.19.2",
+    "@sentry/nextjs": "^10.52.0",
+    "@swc/helpers": "^0.5.18",
+    "ioredis": "^5.10.1",
+    "leaflet": "^1.9.4",
+    "meilisearch": "^0.58.0",
+    "next": "16.2.6",
+    "next-intl": "^4.8.2",
+    "prisma": "^6.19.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-leaflet": "^5.0.0",
+    "redoc": "^2.5.2",
+    "yaml": "^2.8.2",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/leaflet": "^1.9.21",
+    "@types/node": "^25.2.2",
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.4",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.1.6",
+    "jsdom": "^28.0.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "optionalDependencies": {
+    "@esbuild/linux-x64": "^0.27.3",
+    "@parcel/watcher-linux-x64-glibc": "^2.5.6",
+    "@parcel/watcher-linux-x64-musl": "^2.5.6",
+    "@rollup/rollup-linux-x64-gnu": "^4.57.1",
+    "@rollup/rollup-linux-x64-musl": "^4.57.1",
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.1.18",
+    "@tailwindcss/oxide-linux-x64-musl": "^4.1.18",
+    "@unrs/resolver-binding-linux-x64-gnu": "^1.11.1",
+    "@unrs/resolver-binding-linux-x64-musl": "^1.11.1",
+    "lightningcss-linux-x64-gnu": "^1.30.2",
+    "lightningcss-linux-x64-musl": "^1.30.2"
+  }
+}

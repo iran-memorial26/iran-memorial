@@ -1,0 +1,248 @@
+openapi: 3.0.0
+info:
+  title: Iran Memorial API
+  version: 1.0.0
+  description: |
+    Open API for accessing Iran Memorial data — victims, events, statistics, and sources.
+
+    **Authentication:** All endpoints require an API key via `Authorization: Bearer iran_mem_...` header.
+
+    **Rate Limits:** Default 1000 requests/hour per API key.
+
+    **License:** Data is CC BY-SA 4.0. Attribution required.
+  contact:
+    email: <CONTACT_EMAIL>
+  license:
+    name: CC BY-SA 4.0
+    url: https://creativecommons.org/licenses/by-sa/4.0/
+
+servers:
+  - url: <DEPLOYMENT_URL>/api/v1
+    description: Production server
+
+security:
+  - BearerAuth: []
+
+paths:
+  /victims:
+    get:
+      summary: List victims
+      description: Paginated list of victims with optional filters
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1, minimum: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 50, minimum: 1, maximum: 100 }
+        - name: event
+          in: query
+          description: Filter by event slug
+          schema: { type: string }
+        - name: province
+          in: query
+          description: Filter by province slug
+          schema: { type: string }
+        - name: year_start
+          in: query
+          schema: { type: string, pattern: '^\d{4}$' }
+        - name: year_end
+          in: query
+          schema: { type: string, pattern: '^\d{4}$' }
+        - name: gender
+          in: query
+          schema: { type: string, enum: [male, female, unknown] }
+        - name: verified
+          in: query
+          schema: { type: boolean }
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Victim'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+              example:
+                data:
+                  - id: "123e4567-e89b-12d3-a456-426614174000"
+                    slug: "mahsa-amini"
+                    name_latin: "Mahsa Amini"
+                    name_farsi: "مهسا امینی"
+                    date_of_death: "2022-09-16"
+                    age_at_death: 22
+                    verification_status: "verified"
+                    data_source: "hrana"
+                    gender: "female"
+                    province_name_en: "Tehran"
+                meta:
+                  page: 1
+                  limit: 50
+                  total: 30795
+                  total_pages: 616
+        '401':
+          description: Unauthorized - Invalid or missing API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Missing or invalid Authorization header. Use: Bearer iran_mem_..."
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Rate limit exceeded"
+                retry_after: 3600
+
+  /victims/{slug}:
+    get:
+      summary: Get victim by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: Victim not found
+
+  /events:
+    get:
+      summary: List all events
+      responses:
+        '200':
+          description: Success
+
+  /statistics:
+    get:
+      summary: Get global statistics
+      parameters:
+        - name: locale
+          in: query
+          schema: { type: string, enum: [en, de, fa], default: en }
+      responses:
+        '200':
+          description: Success
+
+  /sources:
+    get:
+      summary: List data sources
+      responses:
+        '200':
+          description: Success
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: iran_mem_...
+      description: API key with format iran_mem_XXXX
+
+  schemas:
+    Victim:
+      type: object
+      required: [id, slug, name_latin]
+      properties:
+        id: { type: string, format: uuid }
+        slug: { type: string }
+        name_latin: { type: string }
+        name_farsi: { type: string, nullable: true }
+        aliases: { type: array, items: { type: string }, nullable: true }
+        date_of_birth: { type: string, format: date, nullable: true }
+        date_of_death: { type: string, format: date, nullable: true }
+        age_at_death: { type: integer, nullable: true }
+        place_of_death: { type: string, nullable: true }
+        province: { type: string, nullable: true }
+        city_name_en: { type: string, nullable: true }
+        city_name_fa: { type: string, nullable: true }
+        city_name_de: { type: string, nullable: true }
+        province_name_en: { type: string, nullable: true }
+        province_name_fa: { type: string, nullable: true }
+        province_name_de: { type: string, nullable: true }
+        gender: { type: string, enum: [male, female, unknown], nullable: true }
+        cause_of_death: { type: string, nullable: true }
+        photo_url: { type: string, format: uri, nullable: true }
+        verification_status: { type: string, enum: [verified, unverified, disputed] }
+        data_source: { type: string }
+        event:
+          type: object
+          nullable: true
+          properties:
+            slug: { type: string }
+            title_en: { type: string }
+            title_fa: { type: string }
+
+    Event:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        slug: { type: string }
+        title_en: { type: string }
+        title_fa: { type: string, nullable: true }
+        title_de: { type: string, nullable: true }
+        date_start: { type: string, format: date }
+        date_end: { type: string, format: date, nullable: true }
+        total_victims: { type: integer }
+
+    Statistics:
+      type: object
+      properties:
+        totalVictims: { type: integer }
+        verifiedCount: { type: integer }
+        yearsCovered: { type: string }
+        provincesAffected: { type: integer }
+        deathsByYear: { type: array, items: { $ref: '#/components/schemas/YearCount' } }
+        deathsByProvince: { type: array, items: { $ref: '#/components/schemas/LabelCount' } }
+        deathsByCause: { type: array, items: { $ref: '#/components/schemas/LabelCount' } }
+        ageDistribution: { type: array, items: { $ref: '#/components/schemas/LabelCount' } }
+        genderBreakdown: { type: array, items: { $ref: '#/components/schemas/LabelCount' } }
+        dataSources: { type: array, items: { $ref: '#/components/schemas/LabelCount' } }
+
+    YearCount:
+      type: object
+      properties:
+        year: { type: integer }
+        count: { type: integer }
+
+    LabelCount:
+      type: object
+      properties:
+        label: { type: string }
+        count: { type: integer }
+
+    DataSource:
+      type: object
+      properties:
+        slug: { type: string }
+        name: { type: string }
+        full_name: { type: string, nullable: true }
+        url: { type: string, format: uri, nullable: true }
+        credibility: { type: string, enum: [HIGH, MEDIUM, LOW, UNVERIFIED] }
+        source_type: { type: string }
+
+    PaginationMeta:
+      type: object
+      properties:
+        page: { type: integer, minimum: 1 }
+        limit: { type: integer, minimum: 1, maximum: 100 }
+        total: { type: integer }
+        total_pages: { type: integer }
+
+    Error:
+      type: object
+      properties:
+        error: { type: string }
+        retry_after: { type: integer, nullable: true }

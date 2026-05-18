@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#0a0d12"/>
+  <!-- Candle wax -->
+  <rect x="216" y="240" width="80" height="180" rx="6" fill="#e8eaed"/>
+  <!-- Wax drip shadow -->
+  <rect x="216" y="240" width="80" height="6" fill="#a8aebb"/>
+  <!-- Wick -->
+  <rect x="252" y="200" width="8" height="48" fill="#2a2f3a"/>
+  <!-- Flame outer -->
+  <path d="M256 90 C 230 130, 220 170, 230 200 C 240 230, 270 230, 282 200 C 292 170, 282 130, 256 90 Z" fill="#cba35a"/>
+  <!-- Flame inner -->
+  <path d="M256 130 C 245 155, 240 175, 246 195 C 252 215, 268 215, 274 195 C 280 175, 271 155, 256 130 Z" fill="#fff2c9"/>
+  <!-- Base -->
+  <rect x="208" y="416" width="96" height="14" rx="3" fill="#7c8493"/>
+</svg>

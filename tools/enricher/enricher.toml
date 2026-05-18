@@ -1,0 +1,16 @@
+# Enricher configuration
+# Environment variables override these values.
+# DATABASE_URL, ENRICHER_STATE_DIR, ENRICHER_BATCH_SIZE, ENRICHER_LOG_LEVEL
+
+# database_url = "postgresql://user:pass@host:5432/iran_memorial"
+batch_size = 100
+log_level = "INFO"
+
+# Source-specific settings (optional)
+# [boroumand]
+# rate_limit_min = 0.8
+# rate_limit_max = 1.2
+
+# [iranvictims]
+# rate_limit_min = 2.0
+# rate_limit_max = 4.0
